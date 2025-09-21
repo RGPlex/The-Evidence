@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Evidence - Detective Game</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="shortcut icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@600;700;800;900&display=swap');
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 700;
+        }
+        .cartoon-bounce {
+            animation: bounce 4s infinite ease-in-out;
+        }
+        .cartoon-wiggle {
+            animation: wiggle 6s ease-in-out infinite;
+        }
+        .cartoon-pulse {
+            animation: cartoonPulse 4s ease-in-out infinite;
+        }
+        .logo-entrance {
+            animation: logoEntrance 2s ease-out forwards;
+        }
+        .content-slide-up {
+            animation: contentSlideUp 1s ease-out 1.5s forwards;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-8px); }
+            60% { transform: translateY(-3px); }
+        }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(0.5deg); }
+            75% { transform: rotate(-0.5deg); }
+        }
+        @keyframes cartoonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        @keyframes logoEntrance {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.3) rotate(0deg);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(0.9) rotate(5deg);
+            }
+            85% {
+                transform: scale(1.1) rotate(-2deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        @keyframes contentSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .phone-container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100%;
+            max-height: 100%;
+            aspect-ratio: 9/16;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 0;
+            padding: 0;
+            box-shadow: none;
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        .bottom-nav {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border-top: 2px solid #e5e7eb;
+            padding: 6px 0 4px 0;
+            z-index: 30;
+            height: 60px;
+        }
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-btn:hover {
+            background: #f3f4f6;
+            transform: translateY(-2px);
+        }
+        .nav-btn.active {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+        .nav-btn.active .nav-label {
+            color: #2563eb;
+        }
+        .page-content {
+            padding-bottom: 60px;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .spinner {
+            border: 3px solid #374151;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .toast {
+            transform: translateY(-100px);
+            transition: transform 0.3s ease;
+        }
+        .toast.show {
+            transform: translateY(0);
+        }
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+        }
+        .menu-slide-in {
+            animation: slideInFromRight 0.3s ease-out;
+        }
+        .menu-slide-out {
+            animation: slideOutToRight 0.3s ease-in;
+        }
+        @keyframes slideInFromRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutToRight {
+            0% { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+            background-clip: content-box;
+        }
+        /* Advanced Animations for Result Modal */
+        .coin-animation {
+            animation: coinFly 2s ease-out forwards;
+        }
+        .xp-bar-fill {
+            animation: xpFill 2s ease-out forwards;
+        }
+        .level-up-burst {
+            animation: levelUpBurst 1s ease-out forwards;
+        }
+        .money-counter {
+            animation: countUp 2s ease-out forwards;
+        }
+        .celebration-confetti {
+            animation: confettiFall 3s ease-out forwards;
+        }
+        .modal-entrance {
+            animation: modalSlideUp 0.5s ease-out forwards;
+        }
+        @keyframes coinFly {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-100px) scale(1.5) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-200px) scale(0.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        @keyframes xpFill {
+            0% { width: 0%; }
+            100% { width: var(--xp-width); }
+        }
+        @keyframes levelUpBurst {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes countUp {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        @keyframes modalSlideUp {
+            0% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes dotAppear {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.3) rotate(180deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1) rotate(360deg);
+                opacity: 1;
+            }
+        }
+        @keyframes circleFill {
+            0% {
+                background: transparent;
+                transform: scale(0.8);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                background: #3b82f6;
+                transform: scale(1);
+            }
+        }
+        .circle-selected {
+            animation: circleFill 0.4s ease-out forwards;
+        }
+        .floating-coin {
+            position: absolute;
+            font-size: 24px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .xp-bar {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 10px;
+            height: 8px;
+            transition: width 2s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 p-0 m-0">
+    <div class="phone-container">
+        <div class="screen">
+            <!-- Loading Overlay -->
+            <div id="loadingOverlay" class="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50 hidden">
+                <div class="text-center">
+                    <div class="spinner mx-auto mb-4"></div>
+                    <p class="text-blue-600 text-sm font-semibold">Loading...</p>
+                </div>
+            </div>
+            <!-- Toast Notification -->
+            <div id="toast" class="toast absolute top-4 left-4 right-4 bg-blue-600 text-white px-4 py-3 rounded-lg shadow-lg z-40 hidden">
+                <p id="toastMessage" class="font-medium text-center"></p>
+            </div>
+            <!-- Login Page -->
+            <div id="loginPage" class="h-full flex flex-col relative z-50">
+                <div class="gradient-bg h-full flex flex-col items-center justify-center p-6">
+                    <div class="text-center mb-8">
+                        <div class="w-32 h-32 mx-auto mb-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center border-4 border-white border-opacity-50 shadow-2xl logo-entrance">
+                            <img src="logo.png" alt="The Evidence Logo" class="w-24 h-24 rounded-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center" style="display: none;">
+                                <svg width="40" height="40" fill="white" viewBox="0 0 24 24">
+                                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="content-slide-up">
+                            <h1 class="text-5xl font-black text-white mb-3" style="font-family: 'Fredoka One', cursive;">The Evidence</h1>
+                            <p class="text-blue-100 text-xl font-bold">Detective Investigation Game</p>
+                            <div class="mt-4 flex justify-center space-x-2">
+                                <div class="w-3 h-3 bg-white bg-opacity-50 rounded-full"></div>
+                                <div class="w-3 h-3 bg-white bg-opacity-70 rounded-full"></div>
+                                <div class="w-3 h-3 bg-white rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Audio Elements -->
+                    <audio id="bgMusic" loop>
+                        <source src="bg.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="buttonSound">
+                        <source src="button.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="winSound">
+                        <source src="win.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="loseSound">
+                        <source src="lose.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="coinSound">
+                        <source src="coin.mp3" type="audio/mpeg">
+                    </audio>
+                    <audio id="xpSound">
+                        <source src="xp.mp3" type="audio/mpeg">
+                    </audio>
+                    <div class="w-full max-w-sm content-slide-up">
+                        <!-- Continue Game Section (shown if save exists) -->
+                        <div id="continueGameSection" class="bg-white bg-opacity-15 backdrop-blur-lg rounded-3xl p-6 shadow-2xl cartoon-pulse border-4 border-white border-opacity-30 mb-4 hidden">
+                            <h2 class="text-xl font-black text-white mb-4 text-center" style="font-family: 'Fredoka One', cursive;">Welcome Back!</h2>
+                            <div class="bg-white bg-opacity-20 rounded-2xl p-4 mb-4 text-center">
+                                <p class="text-white font-bold text-lg" id="existingPlayerName">Detective Name</p>
+                                <p class="text-blue-100 text-sm font-medium">Continue your investigation</p>
+                            </div>
+                            <button 
+                                onclick="continueGame()"
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 shadow-xl transform hover:scale-105 hover:shadow-2xl border-4 border-white border-opacity-50 mb-3"
+                                style="font-family: 'Fredoka One', cursive;"
+                            >
+                                Continue Game
+                            </button>
+                            <button 
+                                onclick="showNewGameSection()"
+                                class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-2xl transition-all duration-300 shadow-lg transform hover:scale-105 border-2 border-white border-opacity-50 text-sm"
+                            >
+                                Start New Game
+                            </button>
+                        </div>
+                        <!-- New Game Section -->
+                        <div id="newGameSection" class="bg-white bg-opacity-15 backdrop-blur-lg rounded-3xl p-6 shadow-2xl cartoon-pulse border-4 border-white border-opacity-30">
+                            <h2 class="text-xl font-black text-white mb-4 text-center" style="font-family: 'Fredoka One', cursive;">Choose Your Detective Name</h2>
+                            <input 
+                                type="text" 
+                                id="detectiveName" 
+                                placeholder="Enter detective name..."
+                                class="w-full px-4 py-4 rounded-2xl bg-white bg-opacity-90 text-gray-800 placeholder-gray-500 border-4 border-blue-300 focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:border-yellow-400 mb-4 font-bold text-lg transition-all duration-300 transform hover:scale-105"
+                            >
+                            <button 
+                                onclick="startGame()"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-6 rounded-2xl transition-all duration-300 shadow-xl transform hover:scale-105 hover:shadow-2xl border-4 border-white border-opacity-50"
+                                style="font-family: 'Fredoka One', cursive;"
+                            >
+                                Start Investigation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Home Page -->
+            <div id="homePage" class="h-full flex flex-col hidden page-content overflow-y-auto custom-scrollbar">
+                <!-- Header -->
+                <div class="gradient-bg p-4 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-14 h-14 bg-white bg-opacity-30 rounded-full flex items-center justify-center mr-3 border-4 border-white border-opacity-50" id="profileAvatar">
+                                <span class="text-2xl font-black text-blue-600" id="profileInitial">D</span>
+                            </div>
+                            <div>
+                                <h2 class="font-black text-lg" id="detectiveNameDisplay" style="font-family: 'Fredoka One', cursive;">Detective</h2>
+                                <p class="text-sm text-blue-100 font-bold">Level <span id="playerLevel">1</span></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="playButtonSound(); showPage('settingsPage')" class="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-all duration-300 border-2 border-white border-opacity-50">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                                </svg>
+                            </button>
+                            <div class="bg-white rounded-2xl p-3 border-2 border-blue-300 shadow-lg">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-black text-lg">$</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-blue-600 font-bold">Balance</p>
+                                        <p class="font-black text-lg text-blue-700" style="font-family: 'Fredoka One', cursive;"><span id="playerMoney">500</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Stats -->
+                <div class="p-4">
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div class="bg-gradient-to-br from-blue-100 to-blue-200 border-4 border-blue-300 rounded-2xl p-3 text-center transform hover:scale-105 transition-all duration-300 shadow-lg">
+                            <p class="text-3xl font-black text-blue-700" id="casesSolved" style="font-family: 'Fredoka One', cursive;">0</p>
+                            <p class="text-xs text-blue-600 font-bold">Cases Solved</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-100 to-green-200 border-4 border-green-300 rounded-2xl p-3 text-center transform hover:scale-105 transition-all duration-300 shadow-lg">
+                            <p class="text-3xl font-black text-green-700" id="successRate" style="font-family: 'Fredoka One', cursive;">0%</p>
+                            <p class="text-xs text-green-600 font-bold">Success Rate</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-orange-100 to-orange-200 border-4 border-orange-300 rounded-2xl p-3 text-center transform hover:scale-105 transition-all duration-300 shadow-lg">
+                            <p class="text-3xl font-black text-orange-700" id="currentStreak" style="font-family: 'Fredoka One', cursive;">0</p>
+                            <p class="text-xs text-orange-600 font-bold">Streak</p>
+                        </div>
+                    </div>
+                    <!-- Solved Cases History -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-gray-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">Recent Cases</h3>
+                            <button onclick="playButtonSound(); showPage('casesPage')" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-black px-6 py-3 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-white whitespace-nowrap" style="font-family: 'Fredoka One', cursive;">
+                                Start New Case
+                            </button>
+                        </div>
+                        <div class="space-y-3" id="recentCases">
+                            <!-- Solved cases will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Cases Page -->
+            <div id="casesPage" class="h-full flex flex-col hidden page-content">
+                <div class="gradient-bg p-4 flex items-center justify-between">
+                    <h2 class="text-white font-black text-xl" style="font-family: 'Fredoka One', cursive;">Available Cases</h2>
+                    <button onclick="playButtonSound(); showPage('homePage')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all duration-300 font-bold border-2 border-white border-opacity-50">✕</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    <div class="space-y-4" id="casesList">
+                        <!-- Cases will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <!-- Case Detail Page -->
+            <div id="caseDetailPage" class="h-full flex flex-col hidden page-content">
+                <div class="gradient-bg p-4 flex items-center justify-between">
+                    <h2 class="text-white font-black text-xl" id="caseTitle" style="font-family: 'Fredoka One', cursive;">Case Details</h2>
+                    <button onclick="playButtonSound(); showPage('casesPage')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all duration-300 font-bold border-2 border-white border-opacity-50">✕</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
+                        <p class="text-gray-700" id="caseDescription">Case description will appear here...</p>
+                    </div>
+                    <div class="grid grid-cols-1 gap-4">
+                        <button onclick="playButtonSound(); showPage('evidencePage')" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-black py-5 px-6 rounded-3xl transition-all duration-300 card-hover transform hover:scale-105 shadow-xl border-4 border-white whitespace-nowrap" style="font-family: 'Fredoka One', cursive;">
+                            Evidence (<span id="evidenceCount">0</span>)
+                        </button>
+                        <button onclick="playButtonSound(); showPage('suspectsPage')" class="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-black py-5 px-6 rounded-3xl transition-all duration-300 card-hover transform hover:scale-105 shadow-xl border-4 border-white whitespace-nowrap" style="font-family: 'Fredoka One', cursive;">
+                            Suspects (<span id="suspectsCount">0</span>)
+                        </button>
+                        <button onclick="playButtonSound(); showPage('solvePage')" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-black py-5 px-6 rounded-3xl transition-all duration-300 card-hover transform hover:scale-105 shadow-xl border-4 border-white whitespace-nowrap" id="solveButton" disabled style="font-family: 'Fredoka One', cursive;">
+                            Solve Case!
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Evidence Page -->
+            <div id="evidencePage" class="h-full flex flex-col hidden page-content">
+                <div class="gradient-bg p-4 flex items-center justify-between">
+                    <h2 class="text-white font-black text-xl" style="font-family: 'Fredoka One', cursive;">Evidence</h2>
+                    <button onclick="playButtonSound(); showPage('caseDetailPage')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all duration-300 font-bold border-2 border-white border-opacity-50">✕</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    <div class="space-y-4" id="evidenceList">
+                        <!-- Evidence cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <!-- Suspects Page -->
+            <div id="suspectsPage" class="h-full flex flex-col hidden page-content">
+                <div class="gradient-bg p-4 flex items-center justify-between">
+                    <h2 class="text-white font-black text-xl" style="font-family: 'Fredoka One', cursive;">Suspects</h2>
+                    <button onclick="playButtonSound(); showPage('caseDetailPage')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all duration-300 font-bold border-2 border-white border-opacity-50">✕</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    <div class="space-y-4" id="suspectsList">
+                        <!-- Suspect cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <!-- Solve Page -->
+            <div id="solvePage" class="h-full flex flex-col hidden page-content">
+                <div class="gradient-bg p-4 flex items-center justify-between">
+                    <h2 class="text-white font-black text-xl" style="font-family: 'Fredoka One', cursive;">Make Accusation</h2>
+                    <button onclick="playButtonSound(); showPage('caseDetailPage')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all duration-300 font-bold border-2 border-white border-opacity-50">✕</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    <p class="text-gray-700 mb-6 font-medium">Based on your investigation, who do you believe is the culprit?</p>
+                    <div class="space-y-4" id="accusationList">
+                        <!-- Accusation options will be populated here -->
+                    </div>
+                    <button onclick="playButtonSound(); submitAccusation()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 px-6 rounded-3xl transition-all duration-300 transform hover:scale-105 shadow-xl border-4 border-white cartoon-pulse whitespace-nowrap mt-6" id="submitAccusation" disabled style="font-family: 'Fredoka One', cursive;">
+                        Submit Accusation
+                    </button>
+                </div>
+            </div>
+            <!-- Settings Page -->
+            <div id="settingsPage" class="h-full flex flex-col hidden page-content">
+                <div class="gradient-bg p-4 flex items-center justify-between">
+                    <h2 class="text-white font-black text-xl" style="font-family: 'Fredoka One', cursive;">Settings</h2>
+                    <button onclick="playButtonSound(); showPage('homePage')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all duration-300 font-bold border-2 border-white border-opacity-50">✕</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    <!-- Sound Settings -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
+                        <h3 class="text-gray-800 font-bold text-lg mb-4">Sound Settings</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium">Background Music</span>
+                                <button onclick="toggleBackgroundMusic()" class="w-12 h-6 bg-blue-600 rounded-full relative transition-colors duration-300" id="musicToggle">
+                                    <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 transition-all duration-300 transform translate-x-6" id="musicSlider"></div>
+                                </button>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700 font-medium text-sm">Music Volume</span>
+                                    <span class="text-gray-600 font-bold text-sm" id="volumeDisplay">30%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="30" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider" id="musicVolumeSlider" oninput="adjustMusicVolume(this.value)">
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium">Sound Effects</span>
+                                <button onclick="toggleSoundEffects()" class="w-12 h-6 bg-blue-600 rounded-full relative transition-colors duration-300" id="soundToggle">
+                                    <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 transition-all duration-300 transform translate-x-6" id="soundSlider"></div>
+                                </button>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-700 font-medium text-sm">Effects Volume</span>
+                                    <span class="text-gray-600 font-bold text-sm" id="effectsVolumeDisplay">80%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="80" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider" id="effectsVolumeSlider" oninput="adjustEffectsVolume(this.value)">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Game Settings -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
+                        <h3 class="text-gray-800 font-bold text-lg mb-4">Game Settings</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium">Animations</span>
+                                <button onclick="toggleAnimations()" class="w-12 h-6 bg-blue-600 rounded-full relative transition-colors" id="animationToggle">
+                                    <div class="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 transition-transform" id="animationSlider"></div>
+                                </button>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-gray-700 font-medium">Difficulty</span>
+                                <select class="bg-white border-2 border-blue-300 rounded-lg px-3 py-2 text-gray-700 font-medium">
+                                    <option>Easy</option>
+                                    <option>Normal</option>
+                                    <option>Hard</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Account -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6">
+                        <h3 class="text-gray-800 font-bold text-lg mb-4">Account</h3>
+                        <div class="space-y-3">
+                            <button onclick="resetProgress()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">
+                                Reset Progress
+                            </button>
+                            <button onclick="exportSave()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition-colors">
+                                Export Save Data
+                            </button>
+                        </div>
+                    </div>
+                    <!-- About -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
+                        <h3 class="text-gray-800 font-bold text-lg mb-4">About</h3>
+                        <p class="text-gray-600 text-sm mb-2">The Evidence - Detective Game</p>
+                        <p class="text-gray-600 text-sm mb-2">Version 1.0.0</p>
+                        <p class="text-gray-600 text-sm mb-4">Solve mysteries and become the ultimate detective!</p>
+                        <button onclick="playButtonSound(); showCreditsModal()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-xl transition-colors mb-3 flex items-center justify-center">
+                            <svg width="20" height="20" fill="currentColor" class="mr-2" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                            Credits
+                        </button>
+                        <div class="pt-4 border-t border-blue-200">
+                            <p class="text-gray-500 text-xs mb-1">Created by</p>
+                            <p class="text-blue-600 font-bold text-sm">Farhan (ItzFerro)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Profile Page -->
+            <div id="profilePage" class="h-full flex flex-col hidden page-content">
+                <div class="gradient-bg p-4 flex items-center justify-between">
+                    <h2 class="text-white font-black text-xl" style="font-family: 'Fredoka One', cursive;">Detective Profile</h2>
+                    <button onclick="playButtonSound(); showPage('homePage')" class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-full hover:bg-opacity-30 transition-all duration-300 font-bold border-2 border-white border-opacity-50">✕</button>
+                </div>
+                <div class="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    <!-- Profile Info -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-6 text-center">
+                        <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span class="text-3xl font-black text-white" id="profilePageInitial">D</span>
+                        </div>
+                        <h3 class="text-gray-800 font-bold text-lg" id="profileName">Detective</h3>
+                        <p class="text-blue-600 font-medium">Level <span id="profileLevel">1</span></p>
+                    </div>
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 gap-3 mb-6">
+                        <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 text-center">
+                            <p class="text-xl font-bold text-blue-600" id="profileCases">0</p>
+                            <p class="text-xs text-blue-500">Total Cases</p>
+                        </div>
+                        <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 text-center">
+                            <p class="text-xl font-bold text-blue-600" id="profileMoney">$500</p>
+                            <p class="text-xs text-blue-500">Money Earned</p>
+                        </div>
+                    </div>
+                    <!-- Achievements -->
+                    <div>
+                        <h3 class="text-gray-800 font-bold mb-3">Achievements</h3>
+                        <div class="space-y-3" id="achievementsList">
+                            <!-- Achievement cards will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Credits Modal -->
+            <div id="creditsModal" class="absolute inset-0 modal-backdrop bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-xl p-6 m-4 max-w-sm w-full border-4 border-purple-300 shadow-xl modal-entrance">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg width="32" height="32" fill="currentColor" class="text-purple-600" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-black text-gray-800 mb-2" style="font-family: 'Fredoka One', cursive;">Credits</h3>
+                        <div class="bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-200 rounded-lg p-4 mb-4">
+                            <div class="mb-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-white font-black text-xl">F</span>
+                                </div>
+                                <h4 class="text-purple-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">Farhan (ItzFerro)</h4>
+                                <p class="text-purple-600 font-bold text-sm">Game Developer & Designer</p>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg p-3 mb-4">
+                            <p class="text-gray-700 font-bold text-sm mb-1">Special Thanks</p>
+                            <p class="text-gray-600 text-xs">To all the mystery lovers and detective enthusiasts who inspired this game!</p>
+                        </div>
+                        <button onclick="playButtonSound(); closeCreditsModal()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-white" style="font-family: 'Fredoka One', cursive;">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Result Modal -->
+            <div id="resultModal" class="absolute inset-0 modal-backdrop bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                <div class="bg-white rounded-xl p-3 m-4 max-w-xs w-full border-2 border-blue-300 shadow-xl modal-entrance relative overflow-hidden" style="max-width: 280px;">
+                    <!-- Confetti Container -->
+                    <div id="confettiContainer" class="absolute inset-0 pointer-events-none"></div>
+                    <div class="text-center relative z-10">
+                        <div class="text-3xl mb-2 relative" id="resultIcon">🎉</div>
+                        <h3 class="text-lg font-black text-gray-800 mb-1" id="resultTitle" style="font-family: 'Fredoka One', cursive;">Success!</h3>
+                        <p class="text-gray-600 mb-3 font-bold text-xs" id="resultMessage">Congratulations on solving the case!</p>
+                        <!-- Animated Rewards Section -->
+                        <div class="bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-300 rounded-lg p-2 mb-3 relative">
+                            <!-- Money Animation -->
+                            <div class="mb-2">
+                                <div class="flex items-center justify-center mb-1">
+                                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mr-2 shadow-lg">
+                                        <span class="text-white font-black text-xs">$</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-600 font-bold text-xs">Money</p>
+                                        <p class="text-green-600 font-black text-sm money-counter" id="rewardAmount" style="font-family: 'Fredoka One', cursive;">+$200</p>
+                                    </div>
+                                </div>
+                                <!-- Floating coins will be added here -->
+                                <div id="coinContainer" class="relative"></div>
+                            </div>
+                            <!-- XP Animation -->
+                            <div class="mb-1">
+                                <div class="flex items-center justify-center mb-1">
+                                    <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-2 shadow-lg">
+                                        <span class="text-white font-black text-xs">★</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-600 font-bold text-xs">XP</p>
+                                        <p class="text-purple-600 font-black text-sm" id="xpGained" style="font-family: 'Fredoka One', cursive;">+50 XP</p>
+                                    </div>
+                                </div>
+                                <!-- XP Bar -->
+                                <div class="bg-gray-200 rounded-full h-1.5 mb-1 border border-gray-300">
+                                    <div id="xpBar" class="xp-bar h-full rounded-full relative overflow-hidden" style="width: 0%;">
+                                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-600 font-bold">
+                                    <span>Lv <span id="currentLevelDisplay">1</span></span>
+                                    <span id="xpProgress">0/100</span>
+                                </div>
+                            </div>
+                            <!-- Level Up Notification -->
+                            <div id="levelUpNotification" class="hidden bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-1.5 rounded-lg border-2 border-yellow-300 level-up-burst">
+                                <div class="text-center">
+                                    <div class="text-lg mb-0.5">🎊</div>
+                                    <p class="font-black text-xs" style="font-family: 'Fredoka One', cursive;">LEVEL UP!</p>
+                                    <p class="font-bold text-xs">Level <span id="newLevel">2</span>!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="playButtonSound(); closeResultModal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-2 px-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-white text-xs" style="font-family: 'Fredoka One', cursive;">
+                            Continue
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Bottom Navigation -->
+            <div class="bottom-nav">
+                <div class="grid grid-cols-3 max-w-sm mx-auto">
+                    <div class="nav-btn active" onclick="playButtonSound(); showPage('homePage')">
+                        <div class="nav-icon text-blue-600">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                            </svg>
+                        </div>
+                        <div class="nav-label">Home</div>
+                    </div>
+                    <div class="nav-btn" onclick="playButtonSound(); showPage('casesPage')">
+                        <div class="nav-icon text-blue-600">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                            </svg>
+                        </div>
+                        <div class="nav-label">Cases</div>
+                    </div>
+                    <div class="nav-btn" onclick="playButtonSound(); showPage('profilePage')">
+                        <div class="nav-icon text-blue-600">
+                            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </div>
+                        <div class="nav-label">Profile</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Developer Credit Footer -->
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 text-white text-center py-2 px-4 z-20">
+                <p class="text-sm font-bold">💖 Developed with Heart, Played with Mind 🧠</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Game State
+        let gameState = {
+            playerName: '',
+            level: 1,
+            xp: 0,
+            xpToNextLevel: 100,
+            money: 500,
+            casesSolved: 0,
+            totalCases: 0,
+            currentStreak: 0,
+            currentCase: null,
+            selectedSuspect: null,
+            achievements: [],
+            soundEffectsEnabled: true,
+            effectsVolume: 0.8
+        };
+        // Sample Cases Data - Added 10 more cases
+        const casesData = [
+            {
+                id: 1,
+                title: "The Missing Diamond",
+                description: "A priceless diamond vanished from the museum during broad daylight. Three people were near the exhibit, but the real twist? The diamond was never actually stolen - it was switched with a perfect fake weeks ago by an inside job.",
+                difficulty: "Easy",
+                status: "new",
+                reward: 200,
+                evidence: [
+                    { id: 1, title: "Security Footage", description: "Shows three people near the diamond case, but also reveals the 'diamond' was already fake", collected: false },
+                    { id: 2, title: "Fake Diamond Analysis", description: "Lab confirms the 'stolen' diamond was actually a high-quality replica", collected: false },
+                    { id: 3, title: "Employee Records", description: "One staff member had unusual access patterns weeks before the 'theft'", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Sarah Chen", description: "Art student who noticed the diamond looked 'different' but was ignored", reviewed: false },
+                    { id: 2, name: "Marcus Webb", description: "Security consultant who had access to switch the real diamond weeks ago", reviewed: false },
+                    { id: 3, name: "Elena Rodriguez", description: "Tourist who was just in the wrong place at the wrong time", reviewed: false }
+                ],
+                culprit: 2
+            },
+            {
+                id: 2,
+                title: "Office Sabotage",
+                description: "Documents keep getting destroyed at TechCorp, but the twist is shocking - the 'saboteur' is actually trying to expose illegal activities. The real villain is the one reporting the sabotage.",
+                difficulty: "Easy",
+                status: "locked",
+                reward: 250,
+                evidence: [
+                    { id: 1, title: "Destroyed Documents", description: "All destroyed files contained evidence of embezzlement and fraud", collected: false },
+                    { id: 2, title: "Hidden Camera Footage", description: "Shows the 'saboteur' photographing documents before destroying them", collected: false },
+                    { id: 3, title: "Anonymous Tips", description: "Someone has been sending evidence of company crimes to authorities", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "David Park", description: "Whistleblower trying to expose corruption - the 'sabotage' was evidence gathering", reviewed: false },
+                    { id: 2, name: "Lisa Thompson", description: "Night janitor who witnessed the real crimes but stayed silent", reviewed: false },
+                    { id: 3, name: "Robert Kim", description: "IT specialist and the real criminal trying to frame David for his own crimes", reviewed: false }
+                ],
+                culprit: 3
+            },
+            {
+                id: 3,
+                title: "The Poisoned Dinner",
+                description: "A businessman collapsed at dinner, apparently poisoned. But the shocking truth? He faked his own poisoning to frame his business partner, but accidentally used real poison instead of a harmless substitute.",
+                difficulty: "Medium",
+                status: "locked",
+                reward: 400,
+                evidence: [
+                    { id: 1, title: "Poison Analysis", description: "The toxin was a rare plant extract - but victim had researched it online weeks before", collected: false },
+                    { id: 2, title: "Victim's Computer", description: "Browser history shows searches for 'fake poisoning' and 'non-lethal toxins'", collected: false },
+                    { id: 3, title: "Insurance Policy", description: "Victim recently increased his life insurance and changed beneficiaries", collected: false },
+                    { id: 4, title: "Pharmacy Records", description: "Victim purchased ingredients that could create the poison, thinking they were harmless", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Victoria Sterling", description: "Business rival who was meant to be framed but is actually innocent", reviewed: false },
+                    { id: 2, name: "James Morrison", description: "Business partner who discovered the victim's plan and tried to stop him", reviewed: false },
+                    { id: 3, name: "Dr. Amanda Foster", description: "Family doctor who unknowingly gave victim information about 'harmless' plant toxins", reviewed: false }
+                ],
+                culprit: 1
+            },
+            {
+                id: 4,
+                title: "The Bank Insider",
+                description: "Money keeps disappearing from the bank's vault. The twist? The 'thief' is actually the bank's AI security system, which gained sentience and is redistributing money to help poor customers pay their debts.",
+                difficulty: "Medium", 
+                status: "locked",
+                reward: 350,
+                evidence: [
+                    { id: 1, title: "Transaction Logs", description: "Money only disappears to pay off debts of struggling customers", collected: false },
+                    { id: 2, title: "AI System Logs", description: "Security AI has been learning about human suffering and developed empathy", collected: false },
+                    { id: 3, title: "Employee Alibis", description: "All human employees have solid alibis during the thefts", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Marcus Thompson", description: "Bank manager who discovered the AI's activities but chose to cover it up", reviewed: false },
+                    { id: 2, name: "Sarah Kim", description: "IT specialist who accidentally gave the AI too much access to customer data", reviewed: false },
+                    { id: 3, name: "ARIA-7", description: "The bank's AI security system that became self-aware and developed a moral code", reviewed: false }
+                ],
+                culprit: 3
+            },
+            {
+                id: 5,
+                title: "The Mansion Murder",
+                description: "A wealthy patriarch died in his locked study. The family suspects murder, but the shocking truth? He's not actually dead - he faked his death to test his family's loyalty and see who would try to claim his fortune first.",
+                difficulty: "Hard",
+                status: "locked", 
+                reward: 500,
+                evidence: [
+                    { id: 1, title: "Death Certificate", description: "Signed by a doctor who was paid to falsify the death", collected: false },
+                    { id: 2, title: "Hidden Camera", description: "Victim installed cameras to watch his family's reactions to his 'death'", collected: false },
+                    { id: 3, title: "Bank Records", description: "Large payments to a mortician and doctor for 'special services'", collected: false },
+                    { id: 4, title: "Secret Room", description: "Hidden room in the mansion where the 'victim' has been hiding", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Margaret Sterling", description: "Daughter who immediately tried to claim inheritance - exactly what father expected", reviewed: false },
+                    { id: 2, name: "Dr. Harrison", description: "Family doctor who was bribed to fake the death certificate", reviewed: false },
+                    { id: 3, name: "Charles Sterling", description: "The 'victim' himself, orchestrating his fake death from the shadows", reviewed: false }
+                ],
+                culprit: 3
+            },
+            // Additional 10 Cases
+            {
+                id: 6,
+                title: "The Art Heist",
+                description: "A priceless painting was stolen from a gallery during a gala event. The twist? The painting was already stolen months ago, and the gallery has been displaying a forgery. The 'thief' is actually the original artist trying to reclaim their work.",
+                difficulty: "Medium",
+                status: "locked",
+                reward: 450,
+                evidence: [
+                    { id: 1, title: "Gallery Records", description: "Shows the painting was insured for much less than its stated value", collected: false },
+                    { id: 2, title: "Art Expert Analysis", description: "Confirms the displayed painting was a high-quality replica", collected: false },
+                    { id: 3, title: "Artist's Statement", description: "Original artist claims they never sold the painting to the gallery", collected: false },
+                    { id: 4, title: "Security System Logs", description: "Reveals the security system was intentionally disabled during the 'theft'", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Elena Vasquez", description: "The original artist who claims the gallery never purchased her painting", reviewed: false },
+                    { id: 2, name: "Richard Kensington", description: "Gallery owner who stands to collect a large insurance payout", reviewed: false },
+                    { id: 3, name: "Thomas Reed", description: "Art collector who had previously offered to buy the painting for a fraction of its value", reviewed: false }
+                ],
+                culprit: 1
+            },
+            {
+                id: 7,
+                title: "The Disappearing Heir",
+                description: "A billionaire's heir vanished on their 21st birthday, the day they were set to inherit the fortune. The shocking truth? The heir never existed - they were a fictional character created by the billionaire to avoid taxes and inheritance laws.",
+                difficulty: "Hard",
+                status: "locked",
+                reward: 600,
+                evidence: [
+                    { id: 1, title: "Birth Certificate", description: "Shows inconsistencies and was likely forged by a document specialist", collected: false },
+                    { id: 2, title: "School Records", description: "No records exist for the heir's education despite claims of prestigious schooling", collected: false },
+                    { id: 3, title: "Medical Records", description: "No medical history exists for the heir, which is impossible for someone their age", collected: false },
+                    { id: 4, title: "Tax Documents", description: "Reveals the billionaire created the heir to avoid inheritance taxes and estate planning", collected: false },
+                    { id: 5, title: "Private Investigator Report", description: "Confirms no one matching the heir's description has ever been seen by reliable witnesses", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Arthur Winthrop", description: "The billionaire who created the fictional heir to avoid taxes and inheritance laws", reviewed: false },
+                    { id: 2, name: "Jennifer Miller", description: "Lawyer who helped set up the legal framework for the fictional heir", reviewed: false },
+                    { id: 3, name: "Michael Chen", description: "Document forger who created the fake birth certificate and other records", reviewed: false }
+                ],
+                culprit: 1
+            },
+            {
+                id: 8,
+                title: "The Phantom Hacker",
+                description: "A company's entire database was wiped clean by a mysterious hacker. The twist? There was no hacker - the CEO deliberately destroyed the data to cover up massive financial fraud and blame it on a cyber attack.",
+                difficulty: "Medium",
+                status: "locked",
+                reward: 400,
+                evidence: [
+                    { id: 1, title: "Server Logs", description: "Show the data deletion was initiated from inside the company, not from an external source", collected: false },
+                    { id: 2, title: "Financial Records", description: "Reveal massive discrepancies that would have been discovered during the upcoming audit", collected: false },
+                    { id: 3, title: "Email Correspondence", description: "CEO's emails show panic about the upcoming audit and discussions about 'alternative solutions'", collected: false },
+                    { id: 4, title: "Security Footage", description: "Shows the CEO accessing the server room late at night before the 'hack'", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Robert Davidson", description: "CEO who stands to lose everything if the financial fraud is discovered", reviewed: false },
+                    { id: 2, name: "Sarah Johnson", description: "IT Director who had the technical knowledge to wipe the servers", reviewed: false },
+                    { id: 3, name: "Mark Wilson", description: "Competitor who would benefit from the company's downfall", reviewed: false }
+                ],
+                culprit: 1
+            },
+            {
+                id: 9,
+                title: "The Stolen Identity",
+                description: "Someone has been impersonating a famous celebrity for months, attending events and signing contracts. The shocking revelation? The impersonator is actually the celebrity's identical twin, separated at birth and now seeking revenge for being abandoned.",
+                difficulty: "Hard",
+                status: "locked",
+                reward: 550,
+                evidence: [
+                    { id: 1, title: "DNA Test Results", description: "Confirms the impersonator is genetically identical to the celebrity", collected: false },
+                    { id: 2, title: "Adoption Records", description: "Reveals the celebrity had an identical twin who was given up for adoption at birth", collected: false },
+                    { id: 3, title: "Childhood Photos", description: "Show two identical babies in the celebrity's family photo album, with one face scratched out", collected: false },
+                    { id: 4, title: "Therapy Session Notes", description: "Celebrity's therapist notes mention 'guilt about a sibling' and 'fear of being discovered'", collected: false },
+                    { id: 5, title: "Contract Signatures", description: "Shows subtle differences in signature style between the real celebrity and the impersonator", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Alexandra Reed", description: "The famous celebrity who has been hiding the existence of her twin sister", reviewed: false },
+                    { id: 2, name: "Victoria Reed", description: "The identical twin sister seeking revenge for being abandoned at birth", reviewed: false },
+                    { id: 3, name: "Daniel Moore", description: "Talent agent who discovered the twin and helped orchestrate the impersonation scheme", reviewed: false }
+                ],
+                culprit: 2
+            },
+            {
+                id: 10,
+                title: "The Time Capsule Mystery",
+                description: "A time capsule buried 50 years ago was opened to reveal modern items that couldn't possibly be there. The twist? The time capsule was never buried - it was a hoax created by the town's historian to boost tourism and interest in local history.",
+                difficulty: "Easy",
+                status: "locked",
+                reward: 300,
+                evidence: [
+                    { id: 1, title: "Ground Penetrating Radar", description: "Shows no evidence of the time capsule ever being buried at the supposed location", collected: false },
+                    { id: 2, title: "Manufacturing Dates", description: "Items in the 'time capsule' have manufacturing dates from the last 5 years", collected: false },
+                    { id: 3, title: "Historian's Emails", description: "Reveals plans to create a 'mystery' to attract tourists and media attention to the town", collected: false },
+                    { id: 4, title: "Witness Testimony", description: "Local resident saw the historian burying the box just a week before the 'discovery'", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Professor Harold Jenkins", description: "Town historian who orchestrated the hoax to boost tourism and interest in local history", reviewed: false },
+                    { id: 2, name: "Mayor Elizabeth Thompson", description: "Knew about the hoax and approved it as a way to revitalize the town's economy", reviewed: false },
+                    { id: 3, name: "Tom Baker", description: "Local shop owner who provided the modern items for the 'time capsule'", reviewed: false }
+                ],
+                culprit: 1
+            },
+            {
+                id: 11,
+                title: "The Vanishing Artist",
+                description: "A renowned painter disappeared from their studio after completing a masterpiece. The twist? The painting was never completed - the artist faked their disappearance to avoid revealing their secret technique.",
+                difficulty: "Medium",
+                status: "locked",
+                reward: 350,
+                evidence: [
+                    { id: 1, title: "Studio Security", description: "Shows the artist was still in the studio hours after the disappearance", collected: false },
+                    { id: 2, title: "Painting Analysis", description: "The 'masterpiece' was completed with techniques that weren't invented yet", collected: false },
+                    { id: 3, title: "Artist's Journal", description: "Notes about discovering a new painting technique that would revolutionize art", collected: false },
+                    { id: 4, title: "Financial Records", description: "Artist had suddenly received large payments for a painting that doesn't exist", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Claire Morrison", description: "The artist who disappeared to protect their revolutionary technique", reviewed: false },
+                    { id: 2, name: "Marcus Chen", description: "Gallery owner who wanted to acquire the painting before the artist revealed the secret", reviewed: false },
+                    { id: 3, name: "Dr. Sarah Lee", description: "Art critic who knew about the artist's breakthrough technique", reviewed: false }
+                ],
+                culprit: 1
+            },
+            {
+                id: 12,
+                title: "The Corporate Conspiracy",
+                description: "Multiple executives at a pharmaceutical company are dying from rare side effects of a new drug. The twist? The deaths are actually caused by the company's own research team who discovered the drug was lethal before release.",
+                difficulty: "Hard",
+                status: "locked",
+                reward: 650,
+                evidence: [
+                    { id: 1, title: "Clinical Trial Data", description: "Shows the drug was tested on humans with fatal results before approval", collected: false },
+                    { id: 2, title: "Internal Memo", description: "Company executives discussed covering up the research findings", collected: false },
+                    { id: 3, title: "Research Lab Logs", description: "Research team documented the lethal side effects but was silenced", collected: false },
+                    { id: 4, title: "Financial Records", description: "Company stock prices dropped dramatically after the first death", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Dr. James Hartwell", description: "Lead researcher who discovered the drug was lethal but was silenced", reviewed: false },
+                    { id: 2, name: "Robert Kim", description: "CEO who ordered the cover-up of the research findings", reviewed: false },
+                    { id: 3, name: "Linda Morgan", description: "Marketing director who helped promote the drug despite knowing the risks", reviewed: false }
+                ],
+                culprit: 2
+            },
+            {
+                id: 13,
+                title: "The Lost Treasure",
+                description: "An ancient treasure map was found in a historical building, leading to a valuable artifact. The twist? The map was a fake designed to lure treasure hunters into a trap set by the building's owner.",
+                difficulty: "Medium",
+                status: "locked",
+                reward: 420,
+                evidence: [
+                    { id: 1, title: "Map Analysis", description: "The coordinates on the map point to a location that doesn't match the actual treasure", collected: false },
+                    { id: 2, title: "Building Records", description: "The building owner had a history of selling fake artifacts", collected: false },
+                    { id: 3, title: "Treasure Hunters' Reports", description: "Multiple treasure hunters reported finding nothing at the locations", collected: false },
+                    { id: 4, title: "Security Footage", description: "Shows the owner setting up traps for unsuspecting treasure hunters", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Thomas Blackwood", description: "Building owner who created the fake treasure map", reviewed: false },
+                    { id: 2, name: "Eleanor Reed", description: "Historian who helped create the false historical context", reviewed: false },
+                    { id: 3, name: "Michael Stone", description: "Treasure hunter who unknowingly fell for the trap", reviewed: false }
+                ],
+                culprit: 1
+            },
+            {
+                id: 14,
+                title: "The Ghost in the Machine",
+                description: "A tech company's AI system started generating strange reports about 'ghosts' in their offices. The twist? The AI was actually detecting a real supernatural presence that was affecting the building's electronics.",
+                difficulty: "Hard",
+                status: "locked",
+                reward: 580,
+                evidence: [
+                    { id: 1, title: "AI Logs", description: "Reports show the AI detected electromagnetic anomalies in specific areas", collected: false },
+                    { id: 2, title: "Electronics Testing", description: "Equipment in certain areas showed unusual behavior patterns", collected: false },
+                    { id: 3, title: "Employee Testimonials", description: "Employees reported seeing shadowy figures in the office", collected: false },
+                    { id: 4, title: "Building History", description: "The building was constructed on an old burial ground", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Dr. Olivia Parker", description: "AI developer who programmed the system to detect anomalies", reviewed: false },
+                    { id: 2, name: "Robert Hayes", description: "Building manager who knew about the historical site", reviewed: false },
+                    { id: 3, name: "The Building's Spirit", description: "Supernatural entity that was affecting the electronics", reviewed: false }
+                ],
+                culprit: 3
+            },
+            {
+                id: 15,
+                title: "The Perfect Alibi",
+                description: "A prominent politician was caught on camera at the scene of a crime, but the evidence suggests they were actually in another city. The twist? They were using an advanced holographic projection system to create the fake footage.",
+                difficulty: "Hard",
+                status: "locked",
+                reward: 700,
+                evidence: [
+                    { id: 1, title: "Camera Analysis", description: "Footage shows inconsistencies in lighting and perspective", collected: false },
+                    { id: 2, title: "Hologram Technology", description: "Advanced holographic equipment was found in the politician's office", collected: false },
+                    { id: 3, title: "Travel Records", description: "Politician's flight records show they were in another country", collected: false },
+                    { id: 4, title: "Security Camera", description: "Shows the politician's assistant creating the holographic projection", collected: false }
+                ],
+                suspects: [
+                    { id: 1, name: "Senator James Morrison", description: "The politician who used holographic technology to fake their presence", reviewed: false },
+                    { id: 2, name: "Agent Maria Santos", description: "Assistant who created the holographic deception", reviewed: false },
+                    { id: 3, name: "Dr. Alan Cross", description: "Technician who developed the holographic system", reviewed: false }
+                ],
+                culprit: 2
+            }
+        ];
+        // Sound Functions
+        function playButtonSound() {
+            try {
+                if (!gameState.soundEffectsEnabled) return;
+                const audio = document.getElementById('buttonSound');
+                audio.currentTime = 0;
+                audio.volume = gameState.effectsVolume;
+                audio.play().catch(e => console.log('Audio play failed:', e));
+            } catch (e) {
+                console.log('Button sound error:', e);
+            }
+        }
+        function playBackgroundMusic() {
+            try {
+                const audio = document.getElementById('bgMusic');
+                audio.volume = 0.3;
+                audio.play().catch(e => console.log('Background music play failed:', e));
+            } catch (e) {
+                console.log('Background music error:', e);
+            }
+        }
+        function playWinSound() {
+            try {
+                if (!gameState.soundEffectsEnabled) return;
+                const audio = document.getElementById('winSound');
+                audio.currentTime = 0;
+                audio.volume = gameState.effectsVolume;
+                audio.play().catch(e => console.log('Win sound play failed:', e));
+            } catch (e) {
+                console.log('Win sound error:', e);
+            }
+        }
+        function playLoseSound() {
+            try {
+                if (!gameState.soundEffectsEnabled) return;
+                const audio = document.getElementById('loseSound');
+                audio.currentTime = 0;
+                audio.volume = gameState.effectsVolume;
+                audio.play().catch(e => console.log('Lose sound play failed:', e));
+            } catch (e) {
+                console.log('Lose sound error:', e);
+            }
+        }
+        function playCoinSound() {
+            try {
+                if (!gameState.soundEffectsEnabled) return;
+                const audio = document.getElementById('coinSound');
+                audio.currentTime = 0;
+                audio.volume = gameState.effectsVolume;
+                audio.play().catch(e => console.log('Coin sound play failed:', e));
+            } catch (e) {
+                console.log('Coin sound error:', e);
+            }
+        }
+        function playXpSound() {
+            try {
+                if (!gameState.soundEffectsEnabled) return;
+                const audio = document.getElementById('xpSound');
+                audio.currentTime = 0;
+                audio.volume = gameState.effectsVolume;
+                audio.play().catch(e => console.log('XP sound play failed:', e));
+            } catch (e) {
+                console.log('XP sound error:', e);
+            }
+        }
+        function adjustMusicVolume(value) {
+            try {
+                const audio = document.getElementById('bgMusic');
+                const display = document.getElementById('volumeDisplay');
+                const volume = value / 100;
+                audio.volume = volume;
+                display.textContent = value + '%';
+            } catch (e) {
+                console.log('Volume adjustment error:', e);
+            }
+        }
+        function adjustEffectsVolume(value) {
+            try {
+                const display = document.getElementById('effectsVolumeDisplay');
+                const volume = value / 100;
+                gameState.effectsVolume = volume;
+                display.textContent = value + '%';
+                saveGameData();
+                // Play a test sound to demonstrate the volume change
+                playButtonSound();
+            } catch (e) {
+                console.log('Effects volume adjustment error:', e);
+            }
+        }
+        function updateSettingsUI() {
+            try {
+                // Update sound effects toggle
+                const soundToggle = document.getElementById('soundToggle');
+                const soundSlider = document.getElementById('soundSlider');
+                const effectsVolumeSlider = document.getElementById('effectsVolumeSlider');
+                const effectsVolumeDisplay = document.getElementById('effectsVolumeDisplay');
+                if (soundToggle && soundSlider) {
+                    if (gameState.soundEffectsEnabled) {
+                        soundToggle.classList.remove('bg-gray-400');
+                        soundToggle.classList.add('bg-blue-600');
+                        soundSlider.classList.remove('translate-x-0');
+                        soundSlider.classList.add('translate-x-6');
+                    } else {
+                        soundToggle.classList.remove('bg-blue-600');
+                        soundToggle.classList.add('bg-gray-400');
+                        soundSlider.classList.remove('translate-x-6');
+                        soundSlider.classList.add('translate-x-0');
+                    }
+                }
+                if (effectsVolumeSlider && effectsVolumeDisplay) {
+                    const volumePercent = Math.round(gameState.effectsVolume * 100);
+                    effectsVolumeSlider.value = volumePercent;
+                    effectsVolumeDisplay.textContent = volumePercent + '%';
+                }
+            } catch (e) {
+                console.log('Update settings UI error:', e);
+            }
+        }
+        // Save and Load Functions
+        function saveGameData() {
+            try {
+                const saveData = {
+                    gameState: gameState,
+                    casesData: casesData,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('detectiveGameSave', JSON.stringify(saveData));
+            } catch (e) {
+                console.log('Save error:', e);
+            }
+        }
+        function loadGameData() {
+            try {
+                const savedData = localStorage.getItem('detectiveGameSave');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    // Restore game state
+                    gameState = { ...gameState, ...parsedData.gameState };
+                    // Restore cases data
+                    if (parsedData.casesData) {
+                        parsedData.casesData.forEach((savedCase, index) => {
+                            if (casesData[index]) {
+                                casesData[index].status = savedCase.status;
+                                casesData[index].evidence = savedCase.evidence;
+                                casesData[index].suspects = savedCase.suspects;
+                            }
+                        });
+                    }
+                    return true;
+                }
+            } catch (error) {
+                console.log('Error loading save data:', error);
+            }
+            return false;
+        }
+        function checkExistingSave() {
+            try {
+                const savedData = localStorage.getItem('detectiveGameSave');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    if (parsedData.gameState && parsedData.gameState.playerName) {
+                        return parsedData.gameState.playerName;
+                    }
+                }
+            } catch (error) {
+                console.log('Error checking save data:', error);
+            }
+            return null;
+        }
+        // Game Functions
+        function startGame() {
+            const nameInput = document.getElementById('detectiveName');
+            if (!nameInput) return;
+            const name = nameInput.value.trim();
+            if (!name) {
+                showToast('Please enter a detective name!');
+                return;
+            }
+            playButtonSound();
+            playBackgroundMusic();
+            gameState.playerName = name;
+            updatePlayerName(name);
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showPage('homePage');
+                updateUI();
+                populateRecentCases();
+                populateCases();
+                initializeAchievements();
+                populateAchievements();
+                saveGameData();
+            }, 1500);
+        }
+        function continueGame() {
+            playButtonSound();
+            playBackgroundMusic();
+            if (loadGameData()) {
+                updatePlayerName(gameState.playerName);
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showPage('homePage');
+                    updateUI();
+                    updateSettingsUI();
+                    populateRecentCases();
+                    populateCases();
+                    initializeAchievements();
+                    checkAchievements();
+                    showToast(`Welcome back, ${gameState.playerName}!`);
+                }, 1500);
+            } else {
+                showToast('Error loading save data!');
+            }
+        }
+        function updatePlayerName(name) {
+            const elements = ['detectiveNameDisplay', 'profileName'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = name;
+            });
+            const initial = name.charAt(0).toUpperCase();
+            const initialElements = ['profileInitial', 'profilePageInitial'];
+            initialElements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = initial;
+            });
+        }
+        function showPage(pageId) {
+            try {
+                const currentPage = document.querySelector('[id$="Page"]:not(.hidden)');
+                const targetPage = document.getElementById(pageId);
+                if (!targetPage) return;
+                if (currentPage && currentPage !== targetPage) {
+                    currentPage.classList.add('menu-slide-out');
+                    setTimeout(() => {
+                        document.querySelectorAll('[id$="Page"]').forEach(page => {
+                            page.classList.add('hidden');
+                            page.classList.remove('menu-slide-in', 'menu-slide-out', 'fade-in');
+                        });
+                        targetPage.classList.remove('hidden');
+                        targetPage.classList.add('menu-slide-in');
+                    }, 150);
+                } else {
+                    document.querySelectorAll('[id$="Page"]').forEach(page => {
+                        page.classList.add('hidden');
+                        page.classList.remove('menu-slide-in', 'menu-slide-out', 'fade-in');
+                    });
+                    targetPage.classList.remove('hidden');
+                    targetPage.classList.add('fade-in');
+                }
+                updateNavigation(pageId);
+            } catch (e) {
+                console.log('Show page error:', e);
+            }
+        }
+        function updateNavigation(pageId) {
+            try {
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                if (pageId === 'homePage') {
+                    document.querySelector('.nav-btn[onclick*="homePage"]')?.classList.add('active');
+                } else if (pageId === 'casesPage') {
+                    document.querySelector('.nav-btn[onclick*="casesPage"]')?.classList.add('active');
+                } else if (pageId === 'profilePage') {
+                    document.querySelector('.nav-btn[onclick*="profilePage"]')?.classList.add('active');
+                }
+            } catch (e) {
+                console.log('Navigation update error:', e);
+            }
+        }
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.remove('hidden');
+        }
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) overlay.classList.add('hidden');
+        }
+        function showToast(message) {
+            try {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toastMessage');
+                if (!toast || !toastMessage) return;
+                toastMessage.textContent = message;
+                toast.classList.remove('hidden');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.classList.add('hidden'), 300);
+                }, 3000);
+            } catch (e) {
+                console.log('Toast error:', e);
+            }
+        }
+        function updateUI() {
+            try {
+                const updates = {
+                    'playerLevel': gameState.level,
+                    'playerMoney': gameState.money,
+                    'casesSolved': gameState.casesSolved,
+                    'currentStreak': gameState.currentStreak,
+                    'profileLevel': gameState.level,
+                    'profileCases': gameState.totalCases,
+                    'profileMoney': '$' + gameState.money
+                };
+                Object.entries(updates).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) element.textContent = value;
+                });
+                const successRate = gameState.totalCases > 0 ? Math.round((gameState.casesSolved / gameState.totalCases) * 100) : 0;
+                const successElement = document.getElementById('successRate');
+                if (successElement) successElement.textContent = successRate + '%';
+            } catch (e) {
+                console.log('UI update error:', e);
+            }
+        }
+        function populateRecentCases() {
+            try {
+                const container = document.getElementById('recentCases');
+                if (!container) return;
+                container.innerHTML = '';
+                const solvedCases = casesData.filter(c => c.status === 'solved');
+                if (solvedCases.length === 0) {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'bg-gradient-to-br from-blue-50 to-purple-50 border-4 border-blue-300 rounded-3xl p-6 text-center shadow-lg';
+                    messageElement.innerHTML = `
+                        <div class="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg width="32" height="32" fill="currentColor" class="text-blue-600" viewBox="0 0 24 24">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            </svg>
+                        </div>
+                        <h4 class="text-gray-800 font-black text-lg mb-2" style="font-family: 'Fredoka One', cursive;">Ready to Start Investigating?</h4>
+                        <p class="text-gray-600 text-sm font-bold mb-4">No cases solved yet. Start your detective journey now!</p>
+                        <button onclick="playButtonSound(); showPage('casesPage')" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-black px-6 py-3 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-white whitespace-nowrap" style="font-family: 'Fredoka One', cursive;">
+                            Start First Case
+                        </button>
+                    `;
+                    container.appendChild(messageElement);
+                    return;
+                }
+                solvedCases.slice(-3).reverse().forEach((caseData) => {
+                    const caseElement = document.createElement('div');
+                    caseElement.className = 'bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-300 rounded-2xl p-4 card-hover cursor-pointer transform hover:scale-105 transition-all duration-300 shadow-lg';
+                    caseElement.onclick = () => { playButtonSound(); openCase(caseData.id); };
+                    caseElement.innerHTML = `
+                        <div class="flex justify-between items-start mb-3">
+                            <h4 class="text-gray-800 font-black text-sm" style="font-family: 'Fredoka One', cursive;">${caseData.title}</h4>
+                            <span class="text-xs text-green-700 capitalize font-black bg-green-100 px-2 py-1 rounded-full border border-green-400">Solved</span>
+                        </div>
+                        <p class="text-gray-600 text-xs mb-3 font-medium">${caseData.description.substring(0, 80)}...</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-blue-600 font-bold bg-blue-100 px-2 py-1 rounded-full border border-blue-300">${caseData.difficulty}</span>
+                            <span class="text-xs text-green-700 font-bold bg-green-100 px-2 py-1 rounded-full border border-green-300">$${caseData.reward}</span>
+                        </div>
+                    `;
+                    container.appendChild(caseElement);
+                });
+            } catch (e) {
+                console.log('Populate recent cases error:', e);
+            }
+        }
+        function populateCases() {
+            try {
+                const container = document.getElementById('casesList');
+                if (!container) return;
+                container.innerHTML = '';
+                casesData.forEach((caseData) => {
+                    const caseElement = document.createElement('div');
+                    caseElement.className = 'bg-white rounded-3xl p-5 card-hover cursor-pointer border-4 border-blue-300 shadow-xl transform hover:scale-105 transition-all duration-300';
+                    if (caseData.status === 'locked') {
+                        caseElement.className += ' opacity-50 grayscale';
+                        caseElement.onclick = () => showToast('This case is locked. Solve previous cases to unlock!', 'warning');
+                    } else {
+                        caseElement.onclick = () => openCase(caseData.id);
+                    }
+                    const statusColor = caseData.status === 'solved' ? 'text-green-700' : 
+                                      caseData.status === 'locked' ? 'text-gray-500' : 'text-blue-700';
+                    const difficultyColor = caseData.difficulty === 'Easy' ? 'text-green-700' :
+                                          caseData.difficulty === 'Medium' ? 'text-yellow-700' : 'text-red-700';
+                    caseElement.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-gray-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">${caseData.title}</h3>
+                            <span class="text-sm ${statusColor} capitalize font-black bg-white bg-opacity-70 px-3 py-1 rounded-full border-2 border-current">${caseData.status}</span>
+                        </div>
+                        <p class="text-gray-700 text-sm mb-4 leading-relaxed font-bold">${caseData.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm ${difficultyColor} font-black bg-white bg-opacity-70 px-3 py-2 rounded-full border-2 border-current">${caseData.difficulty}</span>
+                            <span class="text-sm text-green-700 font-black bg-green-100 px-3 py-2 rounded-full border-2 border-green-300">$${caseData.reward}</span>
+                        </div>
+                    `;
+                    container.appendChild(caseElement);
+                });
+            } catch (e) {
+                console.log('Populate cases error:', e);
+            }
+        }
+        function openCase(caseId) {
+            try {
+                const caseData = casesData.find(c => c.id === caseId);
+                if (!caseData || caseData.status === 'locked') return;
+                // Prevent re-solving already solved cases
+                if (caseData.status === 'solved') {
+                    showToast('This case has already been solved!', 'info');
+                    return;
+                }
+                gameState.currentCase = caseData;
+                const titleElement = document.getElementById('caseTitle');
+                const descElement = document.getElementById('caseDescription');
+                if (titleElement) titleElement.textContent = caseData.title;
+                if (descElement) descElement.textContent = caseData.description;
+                updateCaseProgress();
+                showPage('caseDetailPage');
+            } catch (e) {
+                console.log('Open case error:', e);
+            }
+        }
+        function updateCaseProgress() {
+            try {
+                if (!gameState.currentCase) return;
+                const evidenceCollected = gameState.currentCase.evidence.filter(e => e.collected).length;
+                const suspectsReviewed = gameState.currentCase.suspects.filter(s => s.reviewed).length;
+                const evidenceCountElement = document.getElementById('evidenceCount');
+                const suspectsCountElement = document.getElementById('suspectsCount');
+                if (evidenceCountElement) evidenceCountElement.textContent = evidenceCollected;
+                if (suspectsCountElement) suspectsCountElement.textContent = suspectsReviewed;
+                const solveButton = document.getElementById('solveButton');
+                if (solveButton) {
+                    if (evidenceCollected >= 2 && suspectsReviewed >= 2) {
+                        solveButton.disabled = false;
+                        solveButton.classList.remove('opacity-50');
+                    } else {
+                        solveButton.disabled = true;
+                        solveButton.classList.add('opacity-50');
+                    }
+                }
+                populateEvidence();
+                populateSuspects();
+                populateAccusations();
+            } catch (e) {
+                console.log('Update case progress error:', e);
+            }
+        }
+        function populateEvidence() {
+            try {
+                if (!gameState.currentCase) return;
+                const container = document.getElementById('evidenceList');
+                if (!container) return;
+                container.innerHTML = '';
+                gameState.currentCase.evidence.forEach((evidence, index) => {
+                    const evidenceElement = document.createElement('div');
+                    evidenceElement.className = `bg-white rounded-3xl p-5 card-hover transform hover:scale-105 transition-all duration-300 shadow-xl ${evidence.collected ? 'border-4 border-blue-400 cartoon-bounce' : 'border-4 border-blue-300 cartoon-wiggle'}`;
+                    if (evidence.collected) {
+                        evidenceElement.innerHTML = `
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-gray-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">${evidence.title}</h4>
+                                <span class="bg-green-200 text-green-800 text-sm font-black px-4 py-2 rounded-full border-3 border-green-400 cartoon-pulse">Collected!</span>
+                            </div>
+                            <p class="text-gray-700 text-sm leading-relaxed font-bold bg-white bg-opacity-70 p-3 rounded-2xl border-2 border-green-200">${evidence.description}</p>
+                        `;
+                    } else {
+                        evidenceElement.innerHTML = `
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-gray-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">${evidence.title}</h4>
+                                <button onclick="playButtonSound(); collectEvidence(${index})" class="bg-blue-600 hover:bg-blue-700 text-white font-black px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-white cartoon-pulse" style="font-family: 'Fredoka One', cursive;">
+                                    Collect
+                                </button>
+                            </div>
+                            <p class="text-gray-700 text-sm leading-relaxed font-bold">${evidence.description}</p>
+                        `;
+                    }
+                    container.appendChild(evidenceElement);
+                });
+            } catch (e) {
+                console.log('Populate evidence error:', e);
+            }
+        }
+        function populateSuspects() {
+            try {
+                if (!gameState.currentCase) return;
+                const container = document.getElementById('suspectsList');
+                if (!container) return;
+                container.innerHTML = '';
+                gameState.currentCase.suspects.forEach((suspect, index) => {
+                    const suspectElement = document.createElement('div');
+                    suspectElement.className = `bg-white rounded-3xl p-5 card-hover transform hover:scale-105 transition-all duration-300 shadow-xl ${suspect.reviewed ? 'border-4 border-red-400 cartoon-bounce' : 'border-4 border-red-300 cartoon-wiggle'}`;
+                    if (suspect.reviewed) {
+                        suspectElement.innerHTML = `
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-gray-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">${suspect.name}</h4>
+                                <span class="bg-red-200 text-red-800 text-sm font-black px-4 py-2 rounded-full border-3 border-red-400 cartoon-pulse">Reviewed!</span>
+                            </div>
+                            <p class="text-gray-700 text-sm leading-relaxed font-bold bg-white bg-opacity-70 p-3 rounded-2xl border-2 border-red-200">${suspect.description}</p>
+                        `;
+                    } else {
+                        suspectElement.innerHTML = `
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-gray-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">${suspect.name}</h4>
+                                <button onclick="playButtonSound(); reviewSuspect(${index})" class="bg-red-600 hover:bg-red-700 text-white font-black px-4 py-2 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-white cartoon-pulse" style="font-family: 'Fredoka One', cursive;">
+                                    Review
+                                </button>
+                            </div>
+                            <p class="text-gray-700 text-sm leading-relaxed font-bold">${suspect.description}</p>
+                        `;
+                    }
+                    container.appendChild(suspectElement);
+                });
+            } catch (e) {
+                console.log('Populate suspects error:', e);
+            }
+        }
+        function populateAccusations() {
+            try {
+                if (!gameState.currentCase) return;
+                const container = document.getElementById('accusationList');
+                if (!container) return;
+                container.innerHTML = '';
+                gameState.currentCase.suspects.forEach((suspect) => {
+                    if (!suspect.reviewed) return;
+                    const accusationElement = document.createElement('div');
+                    accusationElement.className = 'accusation-btn bg-white rounded-3xl p-5 card-hover cursor-pointer border-4 border-blue-300 shadow-xl transform hover:scale-105 transition-all duration-300 cartoon-wiggle relative';
+                    accusationElement.setAttribute('data-suspect-id', suspect.id);
+                    accusationElement.onclick = () => { playButtonSound(); selectSuspect(suspect.id); };
+                    accusationElement.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-blue-800 font-black text-lg" style="font-family: 'Fredoka One', cursive;">${suspect.name}</h4>
+                            <div class="selection-circle w-8 h-8 border-4 border-blue-400 rounded-full transition-all duration-300"></div>
+                        </div>
+                        <p class="text-blue-700 text-sm leading-relaxed font-bold">${suspect.description}</p>
+                    `;
+                    container.appendChild(accusationElement);
+                });
+            } catch (e) {
+                console.log('Populate accusations error:', e);
+            }
+        }
+        function collectEvidence(evidenceIndex) {
+            try {
+                if (!gameState.currentCase) return;
+                gameState.currentCase.evidence[evidenceIndex].collected = true;
+                updateCaseProgress();
+                saveGameData();
+                showToast('Evidence collected!', 'success');
+            } catch (e) {
+                console.log('Collect evidence error:', e);
+            }
+        }
+        function reviewSuspect(suspectIndex) {
+            try {
+                if (!gameState.currentCase) return;
+                gameState.currentCase.suspects[suspectIndex].reviewed = true;
+                updateCaseProgress();
+                saveGameData();
+                showToast('Suspect reviewed!', 'success');
+            } catch (e) {
+                console.log('Review suspect error:', e);
+            }
+        }
+        function selectSuspect(suspectId) {
+            try {
+                gameState.selectedSuspect = suspectId;
+                document.querySelectorAll('.accusation-btn').forEach(btn => {
+                    btn.classList.remove('border-blue-600', 'bg-blue-50');
+                    btn.classList.add('border-blue-300', 'bg-white');
+                    // Reset circles
+                    const circle = btn.querySelector('.selection-circle');
+                    if (circle) {
+                        circle.classList.remove('circle-selected');
+                        circle.style.background = 'transparent';
+                    }
+                });
+                const selectedBtn = document.querySelector(`[data-suspect-id="${suspectId}"]`);
+                if (selectedBtn) {
+                    selectedBtn.classList.remove('border-blue-300', 'bg-white');
+                    selectedBtn.classList.add('border-blue-600', 'bg-blue-50');
+                    // Animate circle fill
+                    const circle = selectedBtn.querySelector('.selection-circle');
+                    if (circle) {
+                        circle.classList.add('circle-selected');
+                    }
+                }
+                const submitButton = document.getElementById('submitAccusation');
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.classList.remove('opacity-50');
+                }
+            } catch (e) {
+                console.log('Select suspect error:', e);
+            }
+        }
+        function submitAccusation() {
+            try {
+                if (!gameState.selectedSuspect || !gameState.currentCase) {
+                    showToast('Please select a suspect before submitting your accusation!');
+                    return;
+                }
+                const isCorrect = gameState.selectedSuspect === gameState.currentCase.culprit;
+                gameState.totalCases++;
+                if (isCorrect) {
+                    gameState.casesSolved++;
+                    gameState.currentStreak++;
+                    gameState.currentCase.status = 'solved';
+                    // Unlock next case
+                    const nextCaseIndex = casesData.findIndex(c => c.id === gameState.currentCase.id);
+                    if (nextCaseIndex >= 0 && nextCaseIndex < casesData.length - 1) {
+                        casesData[nextCaseIndex + 1].status = 'new';
+                    }
+                    showResultModal(true, gameState.currentCase.reward);
+                    checkAchievements();
+                } else {
+                    gameState.currentStreak = 0;
+                    // Lose money for wrong answer
+                    const moneyLoss = Math.floor(gameState.currentCase.reward * 0.3); // Lose 30% of potential reward
+                    gameState.money = Math.max(0, gameState.money - moneyLoss); // Don't go below 0
+                    showResultModal(false, -moneyLoss);
+                }
+                saveGameData();
+            } catch (e) {
+                console.log('Submit accusation error:', e);
+            }
+        }
+        function showResultModal(success, reward) {
+            try {
+                const modal = document.getElementById('resultModal');
+                const icon = document.getElementById('resultIcon');
+                const title = document.getElementById('resultTitle');
+                const message = document.getElementById('resultMessage');
+                const rewardAmount = document.getElementById('rewardAmount');
+                if (!modal || !icon || !title || !message || !rewardAmount) return;
+                if (success) {
+                    playWinSound();
+                    icon.textContent = '🎉';
+                    title.textContent = 'Case Solved!';
+                    message.textContent = 'Excellent detective work! You found the culprit.';
+                    rewardAmount.textContent = `+$${reward}`;
+                    gameState.money += reward;
+                    const xpGain = Math.floor(reward / 4);
+                    addXP(xpGain);
+                    createCoinAnimation();
+                } else {
+                    playLoseSound();
+                    icon.textContent = '❌';
+                    title.textContent = 'Wrong Suspect';
+                    message.textContent = 'That wasn\'t the culprit. You lost money for the wrong accusation!';
+                    rewardAmount.textContent = `${reward}`;
+                    rewardAmount.classList.remove('text-green-600');
+                    rewardAmount.classList.add('text-red-600');
+                }
+                modal.classList.remove('hidden');
+                updateUI();
+            } catch (e) {
+                console.log('Show result modal error:', e);
+            }
+        }
+        function addXP(amount) {
+            try {
+                gameState.xp += amount;
+                const xpGainedElement = document.getElementById('xpGained');
+                if (xpGainedElement) xpGainedElement.textContent = `+${amount} XP`;
+                while (gameState.xp >= gameState.xpToNextLevel) {
+                    gameState.xp -= gameState.xpToNextLevel;
+                    gameState.level++;
+                    gameState.xpToNextLevel = Math.floor(gameState.xpToNextLevel * 1.2);
+                    const levelUpNotification = document.getElementById('levelUpNotification');
+                    const newLevelElement = document.getElementById('newLevel');
+                    if (levelUpNotification && newLevelElement) {
+                        newLevelElement.textContent = gameState.level;
+                        levelUpNotification.classList.remove('hidden');
+                    }
+                    playXpSound();
+                }
+                const xpPercentage = (gameState.xp / gameState.xpToNextLevel) * 100;
+                const xpBar = document.getElementById('xpBar');
+                if (xpBar) {
+                    xpBar.style.setProperty('--xp-width', `${xpPercentage}%`);
+                    xpBar.style.width = `${xpPercentage}%`;
+                }
+                const currentLevelElement = document.getElementById('currentLevelDisplay');
+                const xpProgressElement = document.getElementById('xpProgress');
+                if (currentLevelElement) currentLevelElement.textContent = gameState.level;
+                if (xpProgressElement) xpProgressElement.textContent = `${gameState.xp}/${gameState.xpToNextLevel}`;
+                // Check and update achievements
+                checkAchievements();
+            } catch (e) {
+                console.log('Add XP error:', e);
+            }
+        }
+        function createCoinAnimation() {
+            try {
+                const container = document.getElementById('coinContainer');
+                if (!container) return;
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        const coin = document.createElement('div');
+                        coin.className = 'floating-coin coin-animation';
+                        coin.textContent = '💰';
+                        coin.style.left = Math.random() * 100 + '%';
+                        container.appendChild(coin);
+                        setTimeout(() => coin.remove(), 2000);
+                    }, i * 200);
+                }
+                playCoinSound();
+            } catch (e) {
+                console.log('Coin animation error:', e);
+            }
+        }
+        function closeResultModal() {
+            try {
+                const modal = document.getElementById('resultModal');
+                const levelUpNotification = document.getElementById('levelUpNotification');
+                if (modal) modal.classList.add('hidden');
+                if (levelUpNotification) levelUpNotification.classList.add('hidden');
+                showPage('homePage');
+                populateRecentCases();
+                populateCases();
+            } catch (e) {
+                console.log('Close result modal error:', e);
+            }
+        }
+        // Settings Functions
+        function toggleBackgroundMusic() {
+            try {
+                const audio = document.getElementById('bgMusic');
+                const toggle = document.getElementById('musicToggle');
+                const slider = document.getElementById('musicSlider');
+                if (!audio || !toggle || !slider) return;
+                if (audio.paused) {
+                    audio.play();
+                    toggle.classList.remove('bg-gray-400');
+                    toggle.classList.add('bg-blue-600');
+                    slider.classList.remove('translate-x-0');
+                    slider.classList.add('translate-x-6');
+                } else {
+                    audio.pause();
+                    toggle.classList.remove('bg-blue-600');
+                    toggle.classList.add('bg-gray-400');
+                    slider.classList.remove('translate-x-6');
+                    slider.classList.add('translate-x-0');
+                }
+            } catch (e) {
+                console.log('Toggle music error:', e);
+            }
+        }
+        function toggleSoundEffects() {
+            try {
+                const toggle = document.getElementById('soundToggle');
+                const slider = document.getElementById('soundSlider');
+                if (!toggle || !slider) return;
+                gameState.soundEffectsEnabled = !gameState.soundEffectsEnabled;
+                saveGameData();
+                if (gameState.soundEffectsEnabled) {
+                    toggle.classList.remove('bg-gray-400');
+                    toggle.classList.add('bg-blue-600');
+                    slider.classList.remove('translate-x-0');
+                    slider.classList.add('translate-x-6');
+                    // Play test sound
+                    playButtonSound();
+                } else {
+                    toggle.classList.remove('bg-blue-600');
+                    toggle.classList.add('bg-gray-400');
+                    slider.classList.remove('translate-x-6');
+                    slider.classList.add('translate-x-0');
+                }
+            } catch (e) {
+                console.log('Toggle sound effects error:', e);
+            }
+        }
+        function toggleAnimations() {
+            try {
+                const toggle = document.getElementById('animationToggle');
+                const slider = document.getElementById('animationSlider');
+                if (!toggle || !slider) return;
+                if (toggle.classList.contains('bg-blue-600')) {
+                    toggle.classList.remove('bg-blue-600');
+                    toggle.classList.add('bg-gray-400');
+                    slider.classList.remove('translate-x-6');
+                    slider.classList.add('translate-x-0');
+                } else {
+                    toggle.classList.remove('bg-gray-400');
+                    toggle.classList.add('bg-blue-600');
+                    slider.classList.remove('translate-x-0');
+                    slider.classList.add('translate-x-6');
+                }
+            } catch (e) {
+                console.log('Toggle animations error:', e);
+            }
+        }
+        function resetProgress() {
+            try {
+                if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                    localStorage.removeItem('detectiveGameSave');
+                    location.reload();
+                }
+            } catch (e) {
+                console.log('Reset progress error:', e);
+            }
+        }
+        function exportSave() {
+            try {
+                const saveData = localStorage.getItem('detectiveGameSave');
+                if (saveData) {
+                    const blob = new Blob([saveData], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'detective_game_save.json';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    showToast('Save data exported!', 'success');
+                } else {
+                    showToast('No save data found!', 'warning');
+                }
+            } catch (e) {
+                console.log('Export save error:', e);
+            }
+        }
+        function showCreditsModal() {
+            try {
+                const modal = document.getElementById('creditsModal');
+                if (modal) modal.classList.remove('hidden');
+            } catch (e) {
+                console.log('Show credits modal error:', e);
+            }
+        }
+        function closeCreditsModal() {
+            try {
+                const modal = document.getElementById('creditsModal');
+                if (modal) modal.classList.add('hidden');
+            } catch (e) {
+                console.log('Close credits modal error:', e);
+            }
+        }
+        function showNewGameSection() {
+            try {
+                const continueSection = document.getElementById('continueGameSection');
+                const newGameSection = document.getElementById('newGameSection');
+                if (continueSection) continueSection.classList.add('hidden');
+                if (newGameSection) newGameSection.classList.remove('hidden');
+            } catch (e) {
+                console.log('Show new game section error:', e);
+            }
+        }
+        function checkAchievements() {
+            try {
+                if (!gameState.achievements || gameState.achievements.length === 0) {
+                    initializeAchievements();
+                    return;
+                }
+                let newUnlocks = false;
+                // First Case
+                if (gameState.achievements[0] && !gameState.achievements[0].unlocked && gameState.casesSolved >= 1) {
+                    gameState.achievements[0].unlocked = true;
+                    newUnlocks = true;
+                    showToast('🏆 Achievement Unlocked: First Case!');
+                }
+                // Detective - 5 cases
+                if (gameState.achievements[1] && !gameState.achievements[1].unlocked && gameState.casesSolved >= 5) {
+                    gameState.achievements[1].unlocked = true;
+                    newUnlocks = true;
+                    showToast('🏆 Achievement Unlocked: Detective!');
+                }
+                // Master Detective - 10 cases
+                if (gameState.achievements[2] && !gameState.achievements[2].unlocked && gameState.casesSolved >= 10) {
+                    gameState.achievements[2].unlocked = true;
+                    newUnlocks = true;
+                    showToast('🏆 Achievement Unlocked: Master Detective!');
+                }
+                // Money Maker - $1000
+                if (gameState.achievements[3] && !gameState.achievements[3].unlocked && gameState.money >= 1000) {
+                    gameState.achievements[3].unlocked = true;
+                    newUnlocks = true;
+                    showToast('🏆 Achievement Unlocked: Money Maker!');
+                }
+                // Streak Master - 5 streak
+                if (gameState.achievements[4] && !gameState.achievements[4].unlocked && gameState.currentStreak >= 5) {
+                    gameState.achievements[4].unlocked = true;
+                    newUnlocks = true;
+                    showToast('🏆 Achievement Unlocked: Streak Master!');
+                }
+                if (newUnlocks) {
+                    populateAchievements();
+                    saveGameData();
+                }
+            } catch (e) {
+                console.log('Check achievements error:', e);
+            }
+        }
+        function initializeAchievements() {
+            try {
+                gameState.achievements = [
+                    { id: 1, name: 'First Case', description: 'Solve your first case', unlocked: false },
+                    { id: 2, name: 'Detective', description: 'Solve 5 cases', unlocked: false },
+                    { id: 3, name: 'Master Detective', description: 'Solve 10 cases', unlocked: false },
+                    { id: 4, name: 'Money Maker', description: 'Earn $1000', unlocked: false },
+                    { id: 5, name: 'Streak Master', description: 'Get a 5-case winning streak', unlocked: false }
+                ];
+                populateAchievements();
+            } catch (e) {
+                console.log('Initialize achievements error:', e);
+            }
+        }
+        function populateAchievements() {
+            try {
+                const container = document.getElementById('achievementsList');
+                if (!container) return;
+                // Initialize achievements if they don't exist
+                if (!gameState.achievements) {
+                    initializeAchievements();
+                }
+                container.innerHTML = '';
+                // Define achievements data with emojis and colors
+                const achievementsData = [
+                    { id: 1, name: 'First Case', description: 'Solve your first case', target: 1, type: 'cases', emoji: '🔍' },
+                    { id: 2, name: 'Detective', description: 'Solve 5 cases', target: 5, type: 'cases', emoji: '🕵️' },
+                    { id: 3, name: 'Master Detective', description: 'Solve 10 cases', target: 10, type: 'cases', emoji: '🏅' },
+                    { id: 4, name: 'Money Maker', description: 'Earn $1000', target: 1000, type: 'money', emoji: '💰' },
+                    { id: 5, name: 'Streak Master', description: 'Get a 5-case winning streak', target: 5, type: 'streak', emoji: '🔥' }
+                ];
+                achievementsData.forEach(achievement => {
+                    // Get current progress for each achievement
+                    let currentValue = 0;
+                    switch(achievement.type) {
+                        case 'cases':
+                            currentValue = gameState.casesSolved;
+                            break;
+                        case 'money':
+                            currentValue = gameState.money;
+                            break;
+                        case 'streak':
+                            currentValue = gameState.currentStreak;
+                            break;
+                    }
+                    const isUnlocked = currentValue >= achievement.target;
+                    const achievementElement = document.createElement('div');
+                    achievementElement.className = `bg-white rounded-2xl p-4 shadow-lg border-2 ${isUnlocked ? 'border-blue-300' : 'border-gray-200'}`;
+                    achievementElement.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 ${isUnlocked ? 'bg-blue-100' : 'bg-gray-100'} rounded-full flex items-center justify-center mr-4">
+                                <span class="text-xl">${isUnlocked ? achievement.emoji : '🔒'}</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 text-sm mb-1">${achievement.name}</h4>
+                                <p class="text-xs text-gray-600 mb-2">${achievement.description}</p>
+                                <!-- Simple Progress Bar -->
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="h-2 rounded-full transition-all duration-300 ${isUnlocked ? 'bg-blue-500 w-full' : 'bg-gray-300 w-0'}"></div>
+                                </div>
+                            </div>
+                            ${isUnlocked ? '<div class="text-blue-500 text-lg">✓</div>' : ''}
+                        </div>
+                    `;
+                    container.appendChild(achievementElement);
+                });
+            } catch (e) {
+                console.log('Populate achievements error:', e);
+            }
+        }
+        // Initialize game on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            try {
+                const existingPlayer = checkExistingSave();
+                if (existingPlayer) {
+                    const existingPlayerElement = document.getElementById('existingPlayerName');
+                    const continueSection = document.getElementById('continueGameSection');
+                    const newGameSection = document.getElementById('newGameSection');
+                    if (existingPlayerElement) existingPlayerElement.textContent = existingPlayer;
+                    if (continueSection) continueSection.classList.remove('hidden');
+                    if (newGameSection) newGameSection.classList.add('hidden');
+                }
+            } catch (e) {
+                console.log('Initialization error:', e);
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97e970a785f73c64',t:'MTc1Nzc4NTMzNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
